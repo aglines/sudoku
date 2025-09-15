@@ -14,10 +14,12 @@
 - start saving each prompt i get along with what its result was
 - visualize the grid, how easiest to show this
 - find way to randomize this grid with the full solved legal sudoku
-
+    (landed on a recursive backtracking algo with randomization)
 
 ## TODO
 
-- find way to remove a certain number of displayed digits, in order to create the unsolved version of the puzzle.
+- create unsolved versions of the ones that get generated, at different levels (research indicates absolute hardest ones have minimum 17 cells populated of the 81 possible)
+
+- do not aim at frontend, just aim at some console interface / text user interface TUI that later i could embed in a webpage.  this is not a frontend project
 
 

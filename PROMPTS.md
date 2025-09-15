@@ -1,5 +1,7 @@
 # PROMPTS
 
+## 04 (out of WS credits apparently) Measure performance, using timeit
+
 
 ## 03   mk seeder.py
 
