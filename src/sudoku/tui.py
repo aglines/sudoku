@@ -1,3 +1,4 @@
+from typing import Dict
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -6,17 +7,17 @@ from readchar import key as keys
 from sudoku.game import SudokuGame
 
 class ColorScheme:
-    GIVEN = "bold blue"
-    USER_INPUT = "green"
-    SELECTED = "black on white"
-    GRID_BORDER = "white"
+    GIVEN: str = "bold blue"
+    USER_INPUT: str = "green"
+    SELECTED: str = "black on white"
+    GRID_BORDER: str = "white"
 
 class SudokuTUI:
-    def __init__(self):
+    def __init__(self) -> None:
         self.console = Console()
         self.game = SudokuGame()
 
-    def draw_grid(self):
+    def draw_grid(self) -> Panel:
         table = Table.grid(padding=(0, 1))
 
         for r in range(9):
@@ -26,7 +27,7 @@ class SudokuTUI:
                 cell_type = self.game.get_cell_type(r, c)
 
                 # Map cell types to styles
-                style_map = {
+                style_map: Dict[str, str] = {
                     'given': ColorScheme.GIVEN,
                     'given_cursor': f"{ColorScheme.SELECTED} {ColorScheme.GIVEN}",
                     'user': ColorScheme.USER_INPUT,
@@ -55,7 +56,7 @@ class SudokuTUI:
         title = "Solution" if self.game.show_solution_mode else "Sudoku Puzzle"
         return Panel(table, title=title, border_style=ColorScheme.GRID_BORDER)
 
-    def handle_input(self, key):
+    def handle_input(self, key: str) -> bool:
         # Navigation - arrow keys and WASD
         if key == keys.UP or key.lower() == 'w':
             self.game.move_cursor('up')
@@ -84,8 +85,7 @@ class SudokuTUI:
 
         return True
 
-
-    def run(self):
+    def run(self) -> None:
         while True:
             self.console.clear()
             self.console.print(self.draw_grid())

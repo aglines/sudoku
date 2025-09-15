@@ -1,11 +1,12 @@
 import random
+from typing import Tuple, List
 from sudoku.grid import SudokuGrid
 
 class SudokuSeeder:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
-    
-    def _valid(self, g, r, c, n):
+
+    def _valid(self, g: SudokuGrid, r: int, c: int, n: int) -> bool:
         # Check row
         for i in range(9):
             if g.grid[r][i].value == n:
@@ -21,12 +22,12 @@ class SudokuSeeder:
                 if g.grid[sr + i][sc + j].value == n:
                     return False
         return True
-    
-    def _fill(self, g, r, c):
+
+    def _fill(self, g: SudokuGrid, r: int, c: int) -> bool:
         if r == 9:
             return True
         nr, nc = (r, c + 1) if c < 8 else (r + 1, 0)
-        nums = list(range(1, 10))
+        nums: List[int] = list(range(1, 10))
         random.shuffle(nums)
         for n in nums:
             if self._valid(g, r, c, n):
@@ -35,13 +36,13 @@ class SudokuSeeder:
                     return True
                 g.grid[r][c].value = 0
         return False
-    
-    def generate(self):
+
+    def generate(self) -> SudokuGrid:
         g = SudokuGrid()
         self._fill(g, 0, 0)
         return g
 
-    def create_puzzle(self, blanks=18):
+    def create_puzzle(self, blanks: int = 18) -> Tuple[SudokuGrid, SudokuGrid]:
         # Generate solved version
         solved_grid = self.generate()
 
@@ -52,7 +53,7 @@ class SudokuSeeder:
                 puzzle_grid.grid[r][c].value = solved_grid.grid[r][c].value
 
         # Randomly mask cells
-        positions = [(r, c) for r in range(9) for c in range(9)]
+        positions: List[Tuple[int, int]] = [(r, c) for r in range(9) for c in range(9)]
         random.shuffle(positions)
         for r, c in positions[:blanks]:
             puzzle_grid.grid[r][c].value = 0
