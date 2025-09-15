@@ -10,7 +10,14 @@
 
 ## DONE
 - project setup using uv
+- create prompt logic for seeding sudoku grid
+- start saving each prompt i get along with what its result was
+- visualize the grid, how easiest to show this
+- find way to randomize this grid with the full solved legal sudoku
+
 
 ## TODO
-- create prompt logic for seeding sudoku puzzles
+
+- find way to remove a certain number of displayed digits, in order to create the unsolved version of the puzzle.
+
 
