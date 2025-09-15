@@ -59,7 +59,3 @@ class SudokuSeeder:
 
         return puzzle_grid, solved_grid
 
-if __name__ == "__main__":
-    from sudoku.tui import SudokuTUI
-    tui = SudokuTUI()
-    tui.run()

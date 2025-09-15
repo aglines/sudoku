@@ -3,7 +3,7 @@ from rich.table import Table
 from rich.panel import Panel
 from readchar import readkey
 from readchar import key as keys
-from sudoku.seeder import SudokuSeeder
+from sudoku.game import SudokuGame
 
 class ColorScheme:
     GIVEN = "bold blue"
@@ -14,11 +14,7 @@ class ColorScheme:
 class SudokuTUI:
     def __init__(self):
         self.console = Console()
-        self.seeder = SudokuSeeder()
-        self.puzzle, self.solution = self.seeder.create_puzzle()
-        self.cursor_row, self.cursor_col = 0, 0
-        self.user_values = {}  # Track user inputs
-        self.show_solution_mode = False
+        self.game = SudokuGame()
 
     def draw_grid(self):
         table = Table.grid(padding=(0, 1))
@@ -26,31 +22,21 @@ class SudokuTUI:
         for r in range(9):
             row_cells = []
             for c in range(9):
-                if self.show_solution_mode:
-                    display = str(self.solution.grid[r][c].value)
-                    style = "bold yellow"
-                else:
-                    value = self.puzzle.grid[r][c].value
+                display = self.game.get_display_value(r, c)
+                cell_type = self.game.get_cell_type(r, c)
 
-                    if (r, c) == (self.cursor_row, self.cursor_col):
-                        if value != 0:  # Given number at cursor
-                            display = str(value)
-                            style = f"{ColorScheme.SELECTED} {ColorScheme.GIVEN}"
-                        elif (r, c) in self.user_values:  # User input at cursor
-                            display = str(self.user_values[(r, c)])
-                            style = f"{ColorScheme.SELECTED} {ColorScheme.USER_INPUT}"
-                        else:  # Empty cell at cursor
-                            display = " "
-                            style = ColorScheme.SELECTED
-                    elif value != 0:  # Given number
-                        display = str(value)
-                        style = ColorScheme.GIVEN
-                    elif (r, c) in self.user_values:  # User input
-                        display = str(self.user_values[(r, c)])
-                        style = ColorScheme.USER_INPUT
-                    else:  # Empty cell
-                        display = " "
-                        style = "white"
+                # Map cell types to styles
+                style_map = {
+                    'given': ColorScheme.GIVEN,
+                    'given_cursor': f"{ColorScheme.SELECTED} {ColorScheme.GIVEN}",
+                    'user': ColorScheme.USER_INPUT,
+                    'user_cursor': f"{ColorScheme.SELECTED} {ColorScheme.USER_INPUT}",
+                    'empty': "white",
+                    'empty_cursor': ColorScheme.SELECTED,
+                    'solution': "bold yellow",
+                    'solution_cursor': "bold yellow"
+                }
+                style = style_map[cell_type]
 
                 # Add borders for 3x3 boxes
                 if c in [2, 5]:
@@ -66,58 +52,44 @@ class SudokuTUI:
                 separator_cells[-1] = separator_cells[-1].replace(" ┼", "")
                 table.add_row(*[f"[{ColorScheme.GRID_BORDER}]{cell}[/]" for cell in separator_cells])
 
-        title = "Solution" if self.show_solution_mode else "Sudoku Puzzle"
+        title = "Solution" if self.game.show_solution_mode else "Sudoku Puzzle"
         return Panel(table, title=title, border_style=ColorScheme.GRID_BORDER)
 
     def handle_input(self, key):
         # Navigation - arrow keys and WASD
         if key == keys.UP or key.lower() == 'w':
-            if self.cursor_row > 0:
-                self.cursor_row -= 1
+            self.game.move_cursor('up')
         elif key == keys.DOWN or key.lower() == 's':
-            if self.cursor_row < 8:
-                self.cursor_row += 1
+            self.game.move_cursor('down')
         elif key == keys.LEFT or key.lower() == 'a':
-            if self.cursor_col > 0:
-                self.cursor_col -= 1
+            self.game.move_cursor('left')
         elif key == keys.RIGHT or key.lower() == 'd':
-            if self.cursor_col < 8:
-                self.cursor_col += 1
+            self.game.move_cursor('right')
 
-        # Number input (only if not a given cell and not in solution mode)
-        elif key.isdigit() and not self.show_solution_mode:
-            num = int(key)
-            if 1 <= num <= 9:
-                # Only allow input in empty cells (not given numbers)
-                if self.puzzle.grid[self.cursor_row][self.cursor_col].value == 0:
-                    self.user_values[(self.cursor_row, self.cursor_col)] = num
+        # Number input
+        elif key.isdigit():
+            self.game.set_value(int(key))
 
         # Clear cell
         elif key in [' ', '0']:
-            if (self.cursor_row, self.cursor_col) in self.user_values:
-                del self.user_values[(self.cursor_row, self.cursor_col)]
+            self.game.clear_cell()
 
         # Commands
         elif key.lower() == 'x':
-            self.show_solution_mode = not self.show_solution_mode
+            self.game.toggle_solution()
         elif key.lower() == 'n':
-            self.new_game()
+            self.game.new_game()
         elif key.lower() == 'q':
             return False
 
         return True
 
-    def new_game(self):
-        self.puzzle, self.solution = self.seeder.create_puzzle()
-        self.user_values = {}
-        self.show_solution_mode = False
-        self.cursor_row, self.cursor_col = 0, 0
 
     def run(self):
         while True:
             self.console.clear()
             self.console.print(self.draw_grid())
-            self.console.print(f"\n[bold]Cursor position:[/] Row {self.cursor_row + 1}, Col {self.cursor_col + 1}")
+            self.console.print(f"\n[bold]Cursor position:[/] Row {self.game.cursor_row + 1}, Col {self.game.cursor_col + 1}")
             self.console.print("\n[bold]Controls:[/] arrows/wasd to move, 1-9 to enter number, space/0 to clear")
             self.console.print("[bold]Commands:[/] 'x' toggle solution, 'n' new game, 'q' quit")
             self.console.print("\n[bold cyan]Press any key:[/]")

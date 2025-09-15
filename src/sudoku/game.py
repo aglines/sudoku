@@ -1,0 +1,74 @@
+from sudoku.seeder import SudokuSeeder
+
+class SudokuGame:
+    def __init__(self):
+        self.seeder = SudokuSeeder()
+        self.puzzle, self.solution = self.seeder.create_puzzle()
+        self.cursor_row, self.cursor_col = 0, 0
+        self.user_values = {}  # Track user inputs
+        self.show_solution_mode = False
+
+    def move_cursor(self, direction):
+        """Move cursor in given direction: 'up', 'down', 'left', 'right'"""
+        if direction == 'up' and self.cursor_row > 0:
+            self.cursor_row -= 1
+        elif direction == 'down' and self.cursor_row < 8:
+            self.cursor_row += 1
+        elif direction == 'left' and self.cursor_col > 0:
+            self.cursor_col -= 1
+        elif direction == 'right' and self.cursor_col < 8:
+            self.cursor_col += 1
+
+    def set_value(self, value):
+        """Set value at current cursor position if valid"""
+        if 1 <= value <= 9 and not self.show_solution_mode:
+            if self.puzzle.grid[self.cursor_row][self.cursor_col].value == 0:
+                self.user_values[(self.cursor_row, self.cursor_col)] = value
+                return True
+        return False
+
+    def clear_cell(self):
+        """Clear value at current cursor position"""
+        if (self.cursor_row, self.cursor_col) in self.user_values:
+            del self.user_values[(self.cursor_row, self.cursor_col)]
+            return True
+        return False
+
+    def toggle_solution(self):
+        """Toggle solution display mode"""
+        self.show_solution_mode = not self.show_solution_mode
+
+    def new_game(self):
+        """Start a new game"""
+        self.puzzle, self.solution = self.seeder.create_puzzle()
+        self.user_values = {}
+        self.show_solution_mode = False
+        self.cursor_row, self.cursor_col = 0, 0
+
+    def get_display_value(self, row, col):
+        """Get the value to display at given position"""
+        if self.show_solution_mode:
+            return str(self.solution.grid[row][col].value)
+
+        value = self.puzzle.grid[row][col].value
+        if value != 0:
+            return str(value)
+        elif (row, col) in self.user_values:
+            return str(self.user_values[(row, col)])
+        else:
+            return " "
+
+    def get_cell_type(self, row, col):
+        """Get cell type: 'given', 'user', 'empty', 'cursor'"""
+        is_cursor = (row, col) == (self.cursor_row, self.cursor_col)
+
+        if self.show_solution_mode:
+            return 'solution_cursor' if is_cursor else 'solution'
+
+        value = self.puzzle.grid[row][col].value
+        if value != 0:
+            return 'given_cursor' if is_cursor else 'given'
+        elif (row, col) in self.user_values:
+            return 'user_cursor' if is_cursor else 'user'
+        else:
+            return 'empty_cursor' if is_cursor else 'empty'
