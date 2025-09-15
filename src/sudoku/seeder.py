@@ -41,6 +41,24 @@ class SudokuSeeder:
         self._fill(g, 0, 0)
         return g
 
+    def create_puzzle(self, blanks=18):
+        # Generate solved version
+        solved_grid = self.generate()
+
+        # Create puzzle copy
+        puzzle_grid = SudokuGrid()
+        for r in range(9):
+            for c in range(9):
+                puzzle_grid.grid[r][c].value = solved_grid.grid[r][c].value
+
+        # Randomly mask cells
+        positions = [(r, c) for r in range(9) for c in range(9)]
+        random.shuffle(positions)
+        for r, c in positions[:blanks]:
+            puzzle_grid.grid[r][c].value = 0
+
+        return puzzle_grid, solved_grid
+
 if __name__ == "__main__":
     s = SudokuSeeder()
     g = s.generate()

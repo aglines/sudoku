@@ -16,10 +16,10 @@
 - find way to randomize this grid with the full solved legal sudoku
     (landed on a recursive backtracking algo with randomization)
 - explore benchmarking via timeit
-## TODO
-
 - create unsolved versions of the ones that get generated, at different levels (research indicates absolute hardest ones have minimum 17 cells populated of the 81 possible)
 
-- do not aim at frontend, just aim at some console interface / text user interface TUI that later i could embed in a webpage.  this is not a frontend project
+## TODO
+
+- do not aim at frontend, just aim at some console interface / text user interface TUI that later i could embed in a webpage.  this is not a frontend project.  Use the python module rich, aimed at richtext
 
 
