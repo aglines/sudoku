@@ -13,6 +13,7 @@ dependencies = [
     "keyboard>=0.13.5",
     "getch>=1.0",
     "readchar>=4.2.1",
+    "pytest>=8.4.2",
 ]
 
 [project.scripts]
