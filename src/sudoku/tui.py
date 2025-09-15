@@ -1,7 +1,8 @@
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from getch import getch
+from readchar import readkey
+from readchar import key as keys
 from sudoku.seeder import SudokuSeeder
 
 class ColorScheme:
@@ -69,17 +70,17 @@ class SudokuTUI:
         return Panel(table, title=title, border_style=ColorScheme.GRID_BORDER)
 
     def handle_input(self, key):
-        # Navigation
-        if key.lower() == 'w':
+        # Navigation - arrow keys and WASD
+        if key == keys.UP or key.lower() == 'w':
             if self.cursor_row > 0:
                 self.cursor_row -= 1
-        elif key.lower() == 's':
+        elif key == keys.DOWN or key.lower() == 's':
             if self.cursor_row < 8:
                 self.cursor_row += 1
-        elif key.lower() == 'a':
+        elif key == keys.LEFT or key.lower() == 'a':
             if self.cursor_col > 0:
                 self.cursor_col -= 1
-        elif key.lower() == 'd':
+        elif key == keys.RIGHT or key.lower() == 'd':
             if self.cursor_col < 8:
                 self.cursor_col += 1
 
@@ -117,12 +118,12 @@ class SudokuTUI:
             self.console.clear()
             self.console.print(self.draw_grid())
             self.console.print(f"\n[bold]Cursor position:[/] Row {self.cursor_row + 1}, Col {self.cursor_col + 1}")
-            self.console.print("\n[bold]Controls:[/] w/s/a/d to move, 1-9 to enter number, space/0 to clear")
+            self.console.print("\n[bold]Controls:[/] arrows/wasd to move, 1-9 to enter number, space/0 to clear")
             self.console.print("[bold]Commands:[/] 'x' toggle solution, 'n' new game, 'q' quit")
             self.console.print("\n[bold cyan]Press any key:[/]")
 
             try:
-                key = getch()
+                key = readkey()
                 if not self.handle_input(key):
                     break
             except KeyboardInterrupt:

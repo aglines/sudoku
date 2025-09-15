@@ -20,5 +20,5 @@
 - TUI / console interface using python's rich library
 
 ## TODO
-
+- get arrow keys working
 

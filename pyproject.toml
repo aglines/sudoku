@@ -12,6 +12,7 @@ dependencies = [
     "rich>=13.0.0",
     "keyboard>=0.13.5",
     "getch>=1.0",
+    "readchar>=4.2.1",
 ]
 
 [project.scripts]
