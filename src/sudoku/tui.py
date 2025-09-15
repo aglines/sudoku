@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
+from getch import getch
 from sudoku.seeder import SudokuSeeder
 
 class ColorScheme:
@@ -67,45 +68,40 @@ class SudokuTUI:
         title = "Solution" if self.show_solution_mode else "Sudoku Puzzle"
         return Panel(table, title=title, border_style=ColorScheme.GRID_BORDER)
 
-    def handle_input(self, user_input):
-        if not user_input:
-            return True
-
-        command = user_input.strip().lower()
-
+    def handle_input(self, key):
         # Navigation
-        if command in ["w", "up"]:
+        if key.lower() == 'w':
             if self.cursor_row > 0:
                 self.cursor_row -= 1
-        elif command in ["s", "down"]:
+        elif key.lower() == 's':
             if self.cursor_row < 8:
                 self.cursor_row += 1
-        elif command in ["a", "left"]:
+        elif key.lower() == 'a':
             if self.cursor_col > 0:
                 self.cursor_col -= 1
-        elif command in ["d", "right"]:
+        elif key.lower() == 'd':
             if self.cursor_col < 8:
                 self.cursor_col += 1
 
         # Number input (only if not a given cell and not in solution mode)
-        elif command.isdigit() and not self.show_solution_mode:
-            num = int(command)
+        elif key.isdigit() and not self.show_solution_mode:
+            num = int(key)
             if 1 <= num <= 9:
                 # Only allow input in empty cells (not given numbers)
                 if self.puzzle.grid[self.cursor_row][self.cursor_col].value == 0:
                     self.user_values[(self.cursor_row, self.cursor_col)] = num
 
         # Clear cell
-        elif command in ["del", "delete", "clear", "0"]:
+        elif key in [' ', '0']:
             if (self.cursor_row, self.cursor_col) in self.user_values:
                 del self.user_values[(self.cursor_row, self.cursor_col)]
 
         # Commands
-        elif command == "sol":
+        elif key.lower() == 'x':
             self.show_solution_mode = not self.show_solution_mode
-        elif command == "new":
+        elif key.lower() == 'n':
             self.new_game()
-        elif command == "quit":
+        elif key.lower() == 'q':
             return False
 
         return True
@@ -121,13 +117,13 @@ class SudokuTUI:
             self.console.clear()
             self.console.print(self.draw_grid())
             self.console.print(f"\n[bold]Cursor position:[/] Row {self.cursor_row + 1}, Col {self.cursor_col + 1}")
-            self.console.print("\n[bold]Controls:[/] w/s/a/d to move, 1-9 to enter number, 'del' to clear")
-            self.console.print("[bold]Commands:[/] 'sol' toggle solution, 'new' new game, 'quit' to exit")
-            self.console.print("\n[bold cyan]Enter command:[/] ", end="")
+            self.console.print("\n[bold]Controls:[/] w/s/a/d to move, 1-9 to enter number, space/0 to clear")
+            self.console.print("[bold]Commands:[/] 'x' toggle solution, 'n' new game, 'q' quit")
+            self.console.print("\n[bold cyan]Press any key:[/]")
 
             try:
-                user_input = input()
-                if not self.handle_input(user_input):
+                key = getch()
+                if not self.handle_input(key):
                     break
             except KeyboardInterrupt:
                 break
