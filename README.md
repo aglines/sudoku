@@ -15,7 +15,7 @@
 - visualize the grid, how easiest to show this
 - find way to randomize this grid with the full solved legal sudoku
     (landed on a recursive backtracking algo with randomization)
-
+- explore benchmarking via timeit
 ## TODO
 
 - create unsolved versions of the ones that get generated, at different levels (research indicates absolute hardest ones have minimum 17 cells populated of the 81 possible)
