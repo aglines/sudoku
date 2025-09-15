@@ -131,6 +131,10 @@ class SudokuTUI:
                 self.console.print("\n[bold green]Thanks for playing![/]")
                 exit(0)
 
-if __name__ == "__main__":
+def main() -> None:
+    """Entry point for the sudoku command"""
     tui = SudokuTUI()
     tui.run()
+
+if __name__ == "__main__":
+    main()
