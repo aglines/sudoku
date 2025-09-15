@@ -19,6 +19,8 @@
 - create unsolved versions of the ones that get generated, at different levels (research indicates absolute hardest ones have minimum 17 cells populated of the 81 possible)
 - TUI / console interface using python's rich library
 - got arrow keys working
+- add comprehensive unit tests
+- add type hints throughout codebase
+- feature dev: difficulty levels
 
 ## TODO
-

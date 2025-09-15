@@ -4,7 +4,7 @@ from rich.table import Table
 from rich.panel import Panel
 from readchar import readkey
 from readchar import key as keys
-from sudoku.game import SudokuGame
+from sudoku.game import SudokuGame, Difficulty
 
 class ColorScheme:
     GIVEN: str = "bold blue"
@@ -15,7 +15,8 @@ class ColorScheme:
 class SudokuTUI:
     def __init__(self) -> None:
         self.console = Console()
-        self.game = SudokuGame()
+        difficulty = self.select_difficulty()
+        self.game = SudokuGame(difficulty)
 
     def draw_grid(self) -> Panel:
         table = Table.grid(padding=(0, 1))
@@ -53,7 +54,7 @@ class SudokuTUI:
                 separator_cells[-1] = separator_cells[-1].replace(" ┼", "")
                 table.add_row(*[f"[{ColorScheme.GRID_BORDER}]{cell}[/]" for cell in separator_cells])
 
-        title = "Solution" if self.game.show_solution_mode else "Sudoku Puzzle"
+        title = "Solution" if self.game.show_solution_mode else f"Sudoku Puzzle ({self.game.difficulty})"
         return Panel(table, title=title, border_style=ColorScheme.GRID_BORDER)
 
     def handle_input(self, key: str) -> bool:
@@ -79,7 +80,8 @@ class SudokuTUI:
         elif key.lower() == 'x':
             self.game.toggle_solution()
         elif key.lower() == 'n':
-            self.game.new_game()
+            difficulty = self.select_difficulty()
+            self.game.new_game(difficulty)
         elif key.lower() == 'q':
             return False
 
@@ -102,6 +104,32 @@ class SudokuTUI:
                 break
 
         self.console.print("\n[bold green]Thanks for playing![/]")
+
+    def select_difficulty(self) -> Difficulty:
+        """Let user select difficulty level"""
+        self.console.print("\n[bold cyan]Select Difficulty Level:[/]")
+        self.console.print("[bold]1.[/] EASY (30 blanks)")
+        self.console.print("[bold]2.[/] MEDIUM (40 blanks)")
+        self.console.print("[bold]3.[/] HARD (50 blanks)")
+        self.console.print("\n[bold]Enter 1, 2, or 3:[/] ", end="")
+
+        while True:
+            try:
+                choice = readkey()
+                if choice == '1':
+                    self.console.print("1 - EASY selected!")
+                    return 'EASY'
+                elif choice == '2':
+                    self.console.print("2 - MEDIUM selected!")
+                    return 'MEDIUM'
+                elif choice == '3':
+                    self.console.print("3 - HARD selected!")
+                    return 'HARD'
+                else:
+                    self.console.print(f"\n[red]Invalid choice '{choice}'. Please enter 1, 2, or 3:[/] ", end="")
+            except KeyboardInterrupt:
+                self.console.print("\n[bold green]Thanks for playing![/]")
+                exit(0)
 
 if __name__ == "__main__":
     tui = SudokuTUI()

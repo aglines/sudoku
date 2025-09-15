@@ -3,11 +3,19 @@ from sudoku.seeder import SudokuSeeder
 
 CellType = Literal['given', 'given_cursor', 'user', 'user_cursor', 'empty', 'empty_cursor', 'solution', 'solution_cursor']
 Direction = Literal['up', 'down', 'left', 'right']
+Difficulty = Literal['EASY', 'MEDIUM', 'HARD']
+
+DIFFICULTY_BLANKS = {
+    'EASY': 30,
+    'MEDIUM': 40,
+    'HARD': 50
+}
 
 class SudokuGame:
-    def __init__(self) -> None:
+    def __init__(self, difficulty: Difficulty = 'MEDIUM') -> None:
         self.seeder = SudokuSeeder()
-        self.puzzle, self.solution = self.seeder.create_puzzle()
+        self.difficulty = difficulty
+        self.puzzle, self.solution = self.seeder.create_puzzle(DIFFICULTY_BLANKS[difficulty])
         self.cursor_row: int = 0
         self.cursor_col: int = 0
         self.user_values: Dict[Tuple[int, int], int] = {}  # Track user inputs
@@ -43,9 +51,11 @@ class SudokuGame:
         """Toggle solution display mode"""
         self.show_solution_mode = not self.show_solution_mode
 
-    def new_game(self) -> None:
+    def new_game(self, difficulty: Difficulty = None) -> None:
         """Start a new game"""
-        self.puzzle, self.solution = self.seeder.create_puzzle()
+        if difficulty:
+            self.difficulty = difficulty
+        self.puzzle, self.solution = self.seeder.create_puzzle(DIFFICULTY_BLANKS[self.difficulty])
         self.user_values = {}
         self.show_solution_mode = False
         self.cursor_row, self.cursor_col = 0, 0
