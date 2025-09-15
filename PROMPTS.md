@@ -1,7 +1,11 @@
 # PROMPTS
 
-## 04 (out of WS credits apparently) Measure performance, using timeit
+## 05 ok well this didn't last long, but then
+- there's not a lot of really unique promptage i'm using to gen the code here
+- i'm committing often enough that it's fine grained changes, not massive refactors
 
+
+## 04 (out of WS credits apparently) Measure performance, using timeit
 
 ## 03   mk seeder.py
 

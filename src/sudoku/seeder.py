@@ -1,5 +1,5 @@
 import random
-from grid import SudokuGrid
+from sudoku.grid import SudokuGrid
 
 class SudokuSeeder:
     def __init__(self):
@@ -60,6 +60,6 @@ class SudokuSeeder:
         return puzzle_grid, solved_grid
 
 if __name__ == "__main__":
-    s = SudokuSeeder()
-    g = s.generate()
-    g.show()
+    from sudoku.tui import SudokuTUI
+    tui = SudokuTUI()
+    tui.run()

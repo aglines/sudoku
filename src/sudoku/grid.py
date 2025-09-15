@@ -19,17 +19,7 @@ class SudokuGrid:
             result.append(row_str)
         return "\n".join(result)
     
-    def show(self):
-        h = "+" + "+".join(["-" * 3] * 9) + "+"
-        print(h)
-        for r in range(9):
-            row = "|"
-            for c in range(9):
-                v = self.grid[r][c].value
-                row += f" {v} |"
-            print(row)
-            print(h)
 
 if __name__ == "__main__":
     g = SudokuGrid()
-    g.show()
+    print(g)

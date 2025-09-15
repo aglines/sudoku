@@ -17,9 +17,8 @@
     (landed on a recursive backtracking algo with randomization)
 - explore benchmarking via timeit
 - create unsolved versions of the ones that get generated, at different levels (research indicates absolute hardest ones have minimum 17 cells populated of the 81 possible)
+- TUI / console interface using python's rich library
 
 ## TODO
-
-- do not aim at frontend, just aim at some console interface / text user interface TUI that later i could embed in a webpage.  this is not a frontend project.  Use the python module rich, aimed at richtext
 
 
