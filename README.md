@@ -8,3 +8,9 @@
 ### Methodology notes
 - write the most often re-used prompt strings, bc it's best practice to not assume that a coding LLM will always or consistently follow the system prompts we attempt to give it
 
+## DONE
+- project setup using uv
+
+## TODO
+- create prompt logic for seeding sudoku puzzles
+
